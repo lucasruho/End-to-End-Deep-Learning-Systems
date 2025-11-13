@@ -1,0 +1,32 @@
+task: regression_tabular
+seed: 42
+output_dir: outputs
+
+data:
+  csv_path: data/train.csv     # path to your CSV
+  target_col: target           # name of target column
+  feature_cols: null           # null = all numeric except target
+  val_split: 0.2
+  test_split: 0.0
+  shuffle: true
+  standardize: true
+
+model:
+  type: mlp
+  hidden_dims: [256, 128]
+  dropout: 0.1
+  activation: relu             # relu | tanh
+
+train:
+  epochs: 30
+  batch_size: 128
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  optimizer: adamw             # adamw | sgd
+  momentum: 0.9                # used if sgd
+  scheduler: cosine            # none | cosine
+  t_max: 30
+
+early_stopping:
+  patience: 5
+  min_delta: 0.0

@@ -1,0 +1,6 @@
+torch
+datasets
+torchmetrics==1.4.0
+tqdm
+pyyaml
+numpy

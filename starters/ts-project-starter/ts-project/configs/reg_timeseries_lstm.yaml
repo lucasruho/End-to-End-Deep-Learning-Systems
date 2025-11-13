@@ -1,0 +1,35 @@
+task: regression_timeseries
+seed: 42
+output_dir: outputs
+
+data:
+  csv_path: data/series.csv    # path to your CSV
+  time_col: timestamp          # column with time ordering
+  target_col: target
+  feature_cols: null           # null = all numeric except target and time_col
+  seq_len: 48                  # input window length (timesteps)
+  horizon: 1                   # predict t + horizon
+  val_split: 0.2
+  test_split: 0.1
+  standardize: true            # fitted on train only
+
+model:
+  type: lstm
+  emb_dim: null                # unused for numeric features
+  hidden_dim: 128
+  num_layers: 1
+  bidirectional: false
+  dropout: 0.1
+
+train:
+  epochs: 40
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 0.0
+  optimizer: adamw
+  scheduler: cosine
+  t_max: 40
+
+early_stopping:
+  patience: 6
+  min_delta: 0.0

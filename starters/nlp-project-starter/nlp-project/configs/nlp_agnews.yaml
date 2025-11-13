@@ -1,0 +1,39 @@
+task: nlp_text_classification
+seed: 42
+output_dir: outputs
+
+data:
+  dataset: ag_news           # ag_news | csv
+  max_vocab: 30000
+  min_freq: 2
+  max_len: 256
+  batch_size: 64
+  num_workers: 2
+
+  # if dataset: csv
+  train_csv: null            # e.g., data/train.csv
+  val_csv: null              # e.g., data/val.csv
+  test_csv: null             # optional
+  text_col: text
+  label_col: label           # int labels 0..C-1 or strings (will be mapped)
+  delimiter: ","
+
+model:
+  emb_dim: 128
+  hidden_dim: 256
+  num_layers: 1
+  bidirectional: true
+  dropout: 0.2
+
+train:
+  epochs: 6
+  optimizer: adamw           # adamw | sgd
+  lr: 1.0e-3
+  weight_decay: 1.0e-2
+  momentum: 0.9              # only if sgd
+  scheduler: none            # none | cosine
+  t_max: 6                   # for cosine
+
+early_stopping:
+  patience: 3
+  min_delta: 0.0
