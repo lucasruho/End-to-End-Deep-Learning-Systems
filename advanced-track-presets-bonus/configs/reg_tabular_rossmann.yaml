@@ -1,0 +1,33 @@
+
+task: regression_tabular
+seed: 42
+output_dir: outputs
+
+data:
+  csv_path: data/train.csv
+  target_col: Sales
+  feature_cols: null      # scripts/rossmann_prep.py writes numeric features
+  val_split: 0.2
+  test_split: 0.0
+  shuffle: true
+  standardize: true
+
+model:
+  type: mlp
+  hidden_dims: [512, 256, 128]
+  dropout: 0.2
+  activation: relu
+
+train:
+  epochs: 50
+  batch_size: 256
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  optimizer: adamw
+  momentum: 0.9
+  scheduler: cosine
+  t_max: 50
+
+early_stopping:
+  patience: 7
+  min_delta: 0.0

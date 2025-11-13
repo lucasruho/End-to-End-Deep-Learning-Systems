@@ -1,0 +1,39 @@
+
+task: nlp_text_classification
+seed: 42
+output_dir: outputs
+
+data:
+  dataset: yelp_full
+  max_vocab: 50000
+  min_freq: 2
+  max_len: 256
+  batch_size: 64
+  num_workers: 2
+
+  train_csv: null
+  val_csv: null
+  test_csv: null
+  text_col: text
+  label_col: label
+  delimiter: ","
+
+model:
+  emb_dim: 128
+  hidden_dim: 256
+  num_layers: 1
+  bidirectional: true
+  dropout: 0.3
+
+train:
+  epochs: 8
+  optimizer: adamw
+  lr: 8.0e-4
+  weight_decay: 1.0e-2
+  momentum: 0.9
+  scheduler: cosine
+  t_max: 8
+
+early_stopping:
+  patience: 3
+  min_delta: 0.0

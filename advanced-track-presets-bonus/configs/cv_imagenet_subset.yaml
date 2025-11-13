@@ -1,0 +1,30 @@
+
+task: cv_classification
+seed: 42
+output_dir: outputs
+
+data:
+  dataset: imagefolder
+  root: ./data/imagenet_subset/train
+  img_size: 224
+  batch_size: 128
+  num_workers: 2
+  val_split: 0.0   # keep separate val folder; run evaluation with val root if needed
+
+model:
+  arch: resnet50
+  pretrained: true
+  freeze_backbone: false
+
+train:
+  epochs: 50
+  optimizer: adamw
+  lr: 1.0e-4
+  weight_decay: 1.0e-2
+  momentum: 0.9
+  scheduler: cosine
+  t_max: 50
+
+early_stopping:
+  patience: 10
+  min_delta: 0.0

@@ -1,0 +1,20 @@
+
+task: object_detection
+seed: 42
+output_dir: outputs
+
+model:
+  weights: yolov8s.pt
+
+data:
+  yaml: data_templates/voc_yolo.yaml
+  imgsz: 640
+  batch: 16
+
+train:
+  epochs: 100
+  lr0: 0.01
+  weight_decay: 0.0005
+  patience: 50
+
+device: auto
