@@ -1,0 +1,35 @@
+
+task: regression_timeseries
+seed: 42
+output_dir: outputs
+
+data:
+  csv_path: data/series.csv
+  time_col: timestamp
+  target_col: target
+  feature_cols: null     # scripts/m5_prep.py writes numeric features
+  seq_len: 56
+  horizon: 1
+  val_split: 0.2
+  test_split: 0.1
+  standardize: true
+
+model:
+  type: lstm
+  hidden_dim: 256
+  num_layers: 2
+  bidirectional: false
+  dropout: 0.2
+
+train:
+  epochs: 60
+  batch_size: 512
+  lr: 1.0e-3
+  weight_decay: 0.0
+  optimizer: adamw
+  scheduler: cosine
+  t_max: 60
+
+early_stopping:
+  patience: 8
+  min_delta: 0.0
