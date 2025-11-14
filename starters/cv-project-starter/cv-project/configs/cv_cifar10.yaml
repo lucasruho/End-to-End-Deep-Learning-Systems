@@ -16,7 +16,7 @@ model:
   freeze_backbone: false    # true = train only final layer
 
 train:
-  epochs: 30
+  epochs: 10
   optimizer: sgd            # adamw | sgd
   lr: 1.0e-2
   weight_decay: 5.0e-4
