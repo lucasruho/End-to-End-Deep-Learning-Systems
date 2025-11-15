@@ -12,6 +12,7 @@ from typing import Tuple
 import torch
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
+from torchvision.datasets import OxfordIIITPet  # <--- AJOUT
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD  = (0.229, 0.224, 0.225)
@@ -53,12 +54,16 @@ def build_dataloaders(cfg) -> Tuple[DataLoader, DataLoader, int, list]:
     img_size = cfg["data"]["img_size"]
     train_tf, val_tf = _build_transforms(img_size)
     root = Path(cfg["data"]["root"])
+    dataset_name = cfg["data"]["dataset"].lower()
 
-    if cfg["data"]["dataset"].lower() == "cifar10":
+    # ===== CIFAR-10 =====
+    if dataset_name == "cifar10":
         train_set = datasets.CIFAR10(root=str(root), train=True, download=True, transform=train_tf)
         val_set   = datasets.CIFAR10(root=str(root), train=False, download=True, transform=val_tf)
         classes = train_set.classes
-    elif cfg["data"]["dataset"].lower() == "imagefolder":
+
+    # ===== ImageFolder =====
+    elif dataset_name == "imagefolder":
         full = datasets.ImageFolder(root=str(root), transform=train_tf)
         val_ratio = float(cfg["data"]["val_split"])
         n_val = max(1, int(len(full) * val_ratio))
@@ -67,12 +72,45 @@ def build_dataloaders(cfg) -> Tuple[DataLoader, DataLoader, int, list]:
         # apply val transforms to the validation subset
         val_set.dataset.transform = val_tf
         classes = full.classes
-    else:
-        raise ValueError("Unknown dataset type")
 
-    train_loader = DataLoader(train_set, batch_size=cfg["data"]["batch_size"],
-                              shuffle=True, num_workers=cfg["data"]["num_workers"], pin_memory=True)
-    val_loader   = DataLoader(val_set,   batch_size=cfg["data"]["batch_size"],
-                              shuffle=False, num_workers=cfg["data"]["num_workers"], pin_memory=True)
+    # ===== Oxford-IIIT Pet =====
+    elif dataset_name == "oxfordpet":
+        full_trainval = OxfordIIITPet(
+            root=str(root),
+            split="trainval",
+            target_types="category",
+            download=True,
+            transform=train_tf,
+        )
+        val_ratio = float(cfg["data"]["val_split"])
+        n_val = max(1, int(len(full_trainval) * val_ratio))
+        n_train = len(full_trainval) - n_val
+
+        train_set, val_set = random_split(
+            full_trainval,
+            [n_train, n_val],
+            generator=torch.Generator().manual_seed(42)
+        )
+        # val set avec les bons transforms
+        val_set.dataset.transform = val_tf
+        classes = full_trainval.classes
+
+    else:
+        raise ValueError(f"Unknown dataset type: {dataset_name}")
+
+    train_loader = DataLoader(
+        train_set,
+        batch_size=cfg["data"]["batch_size"],
+        shuffle=True,
+        num_workers=cfg["data"]["num_workers"],
+        pin_memory=True,
+    )
+    val_loader = DataLoader(
+        val_set,
+        batch_size=cfg["data"]["batch_size"],
+        shuffle=False,
+        num_workers=cfg["data"]["num_workers"],
+        pin_memory=True,
+    )
     num_classes = len(classes)
     return train_loader, val_loader, num_classes, classes
