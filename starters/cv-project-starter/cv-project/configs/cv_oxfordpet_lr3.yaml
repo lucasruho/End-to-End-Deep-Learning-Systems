@@ -1,0 +1,29 @@
+task: cv_classification
+seed: 42
+output_dir: outputs_lr3
+
+data:
+  dataset: oxfordpet
+  root: ./data/pets
+  img_size: 224
+  batch_size: 32
+  num_workers: 4
+  val_split: 0.1
+
+model:
+  arch: resnet18
+  pretrained: true
+  freeze_backbone: false
+
+train:
+  epochs: 20
+  optimizer: adamw
+  lr: 3e-4               # <--- Learning rate augmenté x3
+  weight_decay: 1e-4
+  scheduler: step
+  step_size: 10
+  gamma: 0.1
+
+early_stopping:
+  patience: 5
+  min_delta: 0.0
