@@ -4,7 +4,7 @@ output_dir: outputs
 
 data:
   dataset: oxfordpet          
-  root: ./data/pets           # chemin
+  root: ./data/pets           # chemin 
   img_size: 224               # compatible ResNet
   batch_size: 32              # Oxford Pet est plus lourd que CIFAR
   num_workers: 4
@@ -16,7 +16,7 @@ model:
   freeze_backbone: false      # true = train uniquement la couche finale
 
 train:
-  epochs: 20
+  epochs: 5
   optimizer: adamw            # AdamW recommandé pour ce dataset
   lr: 1.0e-4                  # LR plus bas car backbone pré-entraîné
   weight_decay: 1.0e-4
