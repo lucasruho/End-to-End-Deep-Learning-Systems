@@ -1,29 +1,28 @@
 task: cv_classification
 seed: 42
-output_dir: outputs
+output_dir: outputs_fast
 
 data:
-  dataset: oxfordpet          
-  root: ./data/pets           # chemin 
-  img_size: 224               # compatible ResNet
-  batch_size: 32              # Oxford Pet est plus lourd que CIFAR
+  dataset: oxfordpet
+  root: ./data/pets
+  img_size: 224
+  batch_size: 32
   num_workers: 4
-  val_split: 0.1              # utilisé pour split trainval -> train/val
+  val_split: 0.1
 
 model:
   arch: resnet18
   pretrained: true
-  freeze_backbone: false      # true = train uniquement la couche finale
+  freeze_backbone: false
 
 train:
   epochs: 5
-  optimizer: adamw            # AdamW recommandé pour ce dataset
-  lr: 1.0e-4                  # LR plus bas car backbone pré-entraîné
+  optimizer: adamw
+  lr: 1.0e-4
   weight_decay: 1.0e-4
-  momentum: 0.9               # ignoré si optimizer != sgd
-  scheduler: step             # simple et efficace
-  step_size: 10               # LR /10 tous les 10 epochs
-  gamma: 0.1                  # multiplicateur du scheduler
+  scheduler: step
+  step_size: 10
+  gamma: 0.1
 
 early_stopping:
   patience: 5

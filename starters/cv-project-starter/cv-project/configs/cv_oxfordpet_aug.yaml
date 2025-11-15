@@ -18,8 +18,8 @@ model:
 train:
   epochs: 20
   optimizer: adamw
-  lr: 1e-4
-  weight_decay: 1e-4
+  lr: 1.0e-4         
+  weight_decay: 1.0e-4
   scheduler: step
   step_size: 10
   gamma: 0.1
@@ -29,4 +29,4 @@ early_stopping:
   min_delta: 0.0
 
 augment:
-  stronger: true      # <--- nous allons détecter ce flag dans data.py
+  stronger: true      

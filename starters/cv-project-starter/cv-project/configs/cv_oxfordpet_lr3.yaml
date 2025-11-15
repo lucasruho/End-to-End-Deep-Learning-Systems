@@ -18,8 +18,8 @@ model:
 train:
   epochs: 20
   optimizer: adamw
-  lr: 3e-4               # <--- Learning rate augmenté x3
-  weight_decay: 1e-4
+  lr: 3.0e-4          
+  weight_decay: 1.0e-4
   scheduler: step
   step_size: 10
   gamma: 0.1
