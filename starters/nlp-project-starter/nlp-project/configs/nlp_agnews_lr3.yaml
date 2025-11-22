@@ -20,7 +20,7 @@ model:
 train:
   epochs: 6
   optimizer: adamw
-  lr: 3.0e-3        # ← Learning rate multiplié par 3
+  lr: 3.0e-3          # ← LR ×3
   weight_decay: 1.0e-2
   scheduler: none
 

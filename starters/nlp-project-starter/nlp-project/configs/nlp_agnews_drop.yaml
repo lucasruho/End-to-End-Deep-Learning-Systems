@@ -15,7 +15,7 @@ model:
   hidden_dim: 256
   num_layers: 1
   bidirectional: true
-  dropout: 0.5        # ← Dropout plus agressif (régularisation)
+  dropout: 0.5        # ← Dropout plus agressif
 
 train:
   epochs: 6
