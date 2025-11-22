@@ -1,0 +1,46 @@
+task: nlp_text_classification
+seed: 42
+output_dir: outputs_imdb_fast   # dossier où train.py va écrire les résultats
+
+data:
+  dataset: imdb                 # ag_news | csv | imdb
+  # chemins spécifiques IMDb
+  train_dir: "data/aclImdb/train"
+  test_dir:  "data/aclImdb/test"
+  val_split: 0.2                # 20% du train -> validation
+
+  # paramètres de tokenisation / batching
+  max_vocab: 15000
+  min_freq: 2
+  max_len: 200
+  batch_size: 64
+  num_workers: 2
+  lower: true
+
+  # champs CSV (ignorés pour imdb, mais gardés pour compatibilité)
+  train_csv: null
+  val_csv: null
+  test_csv: null
+  text_col: text
+  label_col: label
+  delimiter: ","
+
+model:
+  emb_dim: 64
+  hidden_dim: 128
+  num_layers: 1
+  bidirectional: true
+  dropout: 0.3
+
+train:
+  epochs: 1                 # baseline rapide
+  optimizer: adamw          # adamw | sgd
+  lr: 1.0e-3
+  weight_decay: 1.0e-2
+  momentum: 0.9             # seulement si sgd
+  scheduler: none           # none | cosine
+  t_max: 1                  # pour cosine (pas utilisé ici)
+
+early_stopping:
+  patience: 2
+  min_delta: 0.0

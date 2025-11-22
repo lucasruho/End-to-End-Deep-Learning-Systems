@@ -1,0 +1,31 @@
+seed: 42
+
+data:
+  dataset: imdb              
+  train_dir: "data/aclImdb/train"
+  test_dir:  "data/aclImdb/test"
+  val_split: 0.2              
+
+  max_vocab: 20000
+  min_freq: 2
+  max_len: 256
+  batch_size: 64
+  num_workers: 0
+  lower: true
+
+model:
+  emb_dim: 100
+  hidden_dim: 128
+  num_layers: 1
+  bidirectional: true
+  dropout: 0.3
+
+training:
+  num_epochs: 3
+  lr: 0.001
+  weight_decay: 0.0
+  grad_clip: 1.0
+
+labels:
+  0: negative
+  1: positive
