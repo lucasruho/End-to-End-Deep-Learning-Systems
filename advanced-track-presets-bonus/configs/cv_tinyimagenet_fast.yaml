@@ -1,15 +1,14 @@
-
 task: cv_classification
 seed: 42
-output_dir: outputs_tiny
+output_dir: outputs_tiny_fast
 
 data:
   dataset: imagefolder
   root: ./data/tiny-imagenet-200/train
-  img_size: 64
+  img_size: 64            # Tiny-ImageNet = 64x64
   batch_size: 128
-  num_workers: 2
-  val_split: 0.1   # use Tiny-ImageNet val as true validation set via separate run or point root to val
+  num_workers: 4
+  val_split: 0.1          # on crée un vrai split train/val 90/10
 
 model:
   arch: resnet18
@@ -17,14 +16,14 @@ model:
   freeze_backbone: false
 
 train:
-  epochs: 30
+  epochs: 5               # baseline rapide
   optimizer: adamw
   lr: 5.0e-4
   weight_decay: 1.0e-2
   momentum: 0.9
   scheduler: cosine
-  t_max: 30
+  t_max: 5
 
 early_stopping:
-  patience: 7
+  patience: 5
   min_delta: 0.0

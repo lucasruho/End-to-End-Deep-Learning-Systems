@@ -1,7 +1,6 @@
-
 task: cv_classification
 seed: 42
-output_dir: outputs_tiny
+output_dir: outputs_tiny_lr3
 
 data:
   dataset: imagefolder
@@ -9,7 +8,7 @@ data:
   img_size: 64
   batch_size: 128
   num_workers: 2
-  val_split: 0.1   # use Tiny-ImageNet val as true validation set via separate run or point root to val
+  val_split: 0.1
 
 model:
   arch: resnet18
@@ -19,7 +18,7 @@ model:
 train:
   epochs: 30
   optimizer: adamw
-  lr: 5.0e-4
+  lr: 1.5e-3         # <- x3 par rapport au baseline (5e-4)
   weight_decay: 1.0e-2
   momentum: 0.9
   scheduler: cosine
