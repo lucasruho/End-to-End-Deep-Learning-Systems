@@ -1,0 +1,29 @@
+task: nlp_text_classification
+seed: 42
+output_dir: outputs_drop
+
+data:
+  dataset: ag_news
+  max_vocab: 30000
+  min_freq: 2
+  max_len: 256
+  batch_size: 64
+  num_workers: 2
+
+model:
+  emb_dim: 128
+  hidden_dim: 256
+  num_layers: 1
+  bidirectional: true
+  dropout: 0.5        # ← Dropout plus agressif (régularisation)
+
+train:
+  epochs: 6
+  optimizer: adamw
+  lr: 1.0e-3
+  weight_decay: 1.0e-2
+  scheduler: none
+
+early_stopping:
+  patience: 3
+  min_delta: 0.0
