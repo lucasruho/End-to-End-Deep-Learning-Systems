@@ -110,6 +110,40 @@ def build_loaders(cfg):
         val_size = max(2000, int(0.1*len(tr_texts)))
         tr_texts_, va_texts = tr_texts[:-val_size], tr_texts[-val_size:]
         tr_labels_, va_labels = tr_labels[:-val_size], tr_labels[-val_size:]
+    elif mode == "imdb":
+        import random
+        from pathlib import Path
+
+        d = cfg["data"]
+        train_dir = d["train_dir"]
+        test_dir  = d["test_dir"]
+        val_split = float(d["val_split"])   # ex: 0.2
+
+        def load_split(split_dir):
+            texts, labels = [], []
+            for label_name, label_id in [("neg", 0), ("pos", 1)]:
+                label_path = Path(split_dir) / label_name
+                for f in label_path.iterdir():
+                    if f.is_file():
+                        texts.append(f.read_text(encoding="utf-8"))
+                        labels.append(label_id)
+            return texts, labels
+
+        # Charge train et test
+        tr_texts, tr_labels = load_split(train_dir)
+        te_texts, te_labels = load_split(test_dir)
+        label_names = ["negative", "positive"]
+
+        # Shuffle + split train -> train / val
+        indices = list(range(len(tr_texts)))
+        random.shuffle(indices)
+        split_idx = int(len(indices) * (1 - val_split))
+        tr_idx, va_idx = indices[:split_idx], indices[split_idx:]
+
+        tr_texts_  = [tr_texts[i] for i in tr_idx]
+        tr_labels_ = [tr_labels[i] for i in tr_idx]
+        va_texts   = [tr_texts[i] for i in va_idx]
+        va_labels  = [tr_labels[i] for i in va_idx]
     elif mode == "csv":
         d = cfg["data"]
         tr_texts, tr_labels = _load_csv(d["train_csv"], d["text_col"], d["label_col"], d["delimiter"]) if d["train_csv"] else ([],[])
@@ -137,9 +171,16 @@ def build_loaders(cfg):
 
     train_ds = SimpleTextDataset(tr_texts_, tr_labels_, vocab, max_len)
     val_ds   = SimpleTextDataset(va_texts,   va_labels,   vocab, max_len)
-    test_ds  = SimpleTextDataset(te_texts,   te_labels,   vocab, max_len) if mode=="ag_news" or cfg["data"]["test_csv"] else None
+    has_test = False
+    if mode == "ag_news":
+        has_test = True
+    elif mode == "imdb":
+        has_test = True
+    elif mode == "csv" and cfg["data"].get("test_csv"):
+        has_test = True
 
-   
+    test_ds = SimpleTextDataset(te_texts, te_labels, vocab, max_len) if has_test else None
+
     cf = partial(collate_with_pad, pad_idx=vocab.pad_idx)
 
     train_loader = DataLoader(
@@ -149,21 +190,20 @@ def build_loaders(cfg):
         num_workers=nw,
         collate_fn=cf
     )
-    val_loader   = DataLoader(
+    val_loader = DataLoader(
         val_ds,
         batch_size=bs,
         shuffle=False,
         num_workers=nw,
         collate_fn=cf
     )
-    test_loader  = DataLoader(
+    test_loader = DataLoader(
         test_ds,
         batch_size=bs,
         shuffle=False,
         num_workers=nw,
         collate_fn=cf
-    ) if test_ds else None
+    ) if has_test else None
 
-    num_classes = len(set(tr_labels_ + va_labels + (te_labels if (mode=="ag_news" or cfg["data"]["test_csv"]) else [])))
+    num_classes = len(set(tr_labels_ + va_labels + (te_labels if has_test else [])))
     return train_loader, val_loader, test_loader, vocab, num_classes, label_names
-
