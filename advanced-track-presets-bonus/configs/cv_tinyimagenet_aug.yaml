@@ -1,7 +1,6 @@
-
 task: cv_classification
 seed: 42
-output_dir: outputs_tiny
+output_dir: outputs_tiny_aug
 
 data:
   dataset: imagefolder
@@ -9,7 +8,10 @@ data:
   img_size: 64
   batch_size: 128
   num_workers: 2
-  val_split: 0.1   # use Tiny-ImageNet val as true validation set via separate run or point root to val
+  val_split: 0.1
+
+augment:
+  stronger: true     # <- Active les transformations agressives
 
 model:
   arch: resnet18
