@@ -6,6 +6,7 @@ from collections import Counter, defaultdict
 import torch
 from torch.utils.data import Dataset, DataLoader, random_split
 from utils import tokenize
+from functools import partial
 
 SPECIALS = {"<pad>":0, "<unk>":1}
 
@@ -63,6 +64,10 @@ def collate_pad(batch: List[TextExample], pad_idx: int):
         if ex.length>0:
             toks[i, :ex.length] = torch.tensor(ex.tokens, dtype=torch.long)
     return toks, lens, labels
+
+
+def collate_with_pad(batch, pad_idx: int):   
+    return collate_pad(batch, pad_idx)
 
 def _load_ag_news():
     from datasets import load_dataset
@@ -127,15 +132,38 @@ def build_loaders(cfg):
 
     # Build vocab from train only
     tokenized = [ tokenize(t) for t in tr_texts_ ]
-    vocab = Vocab(max_size=max_vocab, min_freq=min_freq); vocab.build(tokenized)
+    vocab = Vocab(max_size=max_vocab, min_freq=min_freq)
+    vocab.build(tokenized)
 
     train_ds = SimpleTextDataset(tr_texts_, tr_labels_, vocab, max_len)
     val_ds   = SimpleTextDataset(va_texts,   va_labels,   vocab, max_len)
     test_ds  = SimpleTextDataset(te_texts,   te_labels,   vocab, max_len) if mode=="ag_news" or cfg["data"]["test_csv"] else None
 
-    train_loader = DataLoader(train_ds, batch_size=bs, shuffle=True,  num_workers=nw, collate_fn=lambda b: collate_pad(b, vocab.pad_idx))
-    val_loader   = DataLoader(val_ds,   batch_size=bs, shuffle=False, num_workers=nw, collate_fn=lambda b: collate_pad(b, vocab.pad_idx))
-    test_loader  = DataLoader(test_ds,  batch_size=bs, shuffle=False, num_workers=nw, collate_fn=lambda b: collate_pad(b, vocab.pad_idx)) if test_ds else None
+   
+    cf = partial(collate_with_pad, pad_idx=vocab.pad_idx)
+
+    train_loader = DataLoader(
+        train_ds,
+        batch_size=bs,
+        shuffle=True,
+        num_workers=nw,
+        collate_fn=cf
+    )
+    val_loader   = DataLoader(
+        val_ds,
+        batch_size=bs,
+        shuffle=False,
+        num_workers=nw,
+        collate_fn=cf
+    )
+    test_loader  = DataLoader(
+        test_ds,
+        batch_size=bs,
+        shuffle=False,
+        num_workers=nw,
+        collate_fn=cf
+    ) if test_ds else None
 
     num_classes = len(set(tr_labels_ + va_labels + (te_labels if (mode=="ag_news" or cfg["data"]["test_csv"]) else [])))
     return train_loader, val_loader, test_loader, vocab, num_classes, label_names
+
