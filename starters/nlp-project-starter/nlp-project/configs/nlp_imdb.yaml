@@ -1,31 +1,45 @@
+task: nlp_text_classification
 seed: 42
+output_dir: outputs_imdb_m3     # nouveau dossier pour le run M3
 
 data:
-  dataset: imdb              
+  dataset: imdb
   train_dir: "data/aclImdb/train"
   test_dir:  "data/aclImdb/test"
-  val_split: 0.2              
+  val_split: 0.2
 
-  max_vocab: 20000
+  # paramètres de vocabulaire / séquences
+  max_vocab: 20000              # plus grand que le fast
   min_freq: 2
-  max_len: 256
+  max_len: 256                  # plus long que la version fast
   batch_size: 64
-  num_workers: 0
+  num_workers: 2
   lower: true
 
+  # champs CSV (compatibilité)
+  train_csv: null
+  val_csv: null
+  test_csv: null
+  text_col: text
+  label_col: label
+  delimiter: ","
+
 model:
-  emb_dim: 100
-  hidden_dim: 128
-  num_layers: 1
+  emb_dim: 128                  # plus large que fast
+  hidden_dim: 256
+  num_layers: 2                 # LSTM un peu plus profond
   bidirectional: true
   dropout: 0.3
 
-training:
-  num_epochs: 3
-  lr: 0.001
-  weight_decay: 0.0
-  grad_clip: 1.0
+train:
+  epochs: 6                     # entraînement complet (vs. 1 pour fast)
+  optimizer: adamw
+  lr: 1.0e-3
+  weight_decay: 1.0e-2          # régularisation (L2)
+  momentum: 0.9                 # ignoré pour adamw
+  scheduler: cosine             # scheduler M3
+  t_max: 6                      # nombre d’époques (cosine annealing)
 
-labels:
-  0: negative
-  1: positive
+early_stopping:
+  patience: 3                   # arrêter si plus de progrès
+  min_delta: 0.0
