@@ -1,0 +1,43 @@
+task: nlp_text_classification
+seed: 42
+output_dir: outputs_imdb_m4_nosched
+
+data:
+  dataset: imdb
+  train_dir: "data/aclImdb/train"
+  test_dir:  "data/aclImdb/test"
+  val_split: 0.2
+
+  max_vocab: 20000
+  min_freq: 2
+  max_len: 256
+  batch_size: 64
+  num_workers: 2
+  lower: true
+
+  train_csv: null
+  val_csv: null
+  test_csv: null
+  text_col: text
+  label_col: label
+  delimiter: ","
+
+model:
+  emb_dim: 128
+  hidden_dim: 256
+  num_layers: 2
+  bidirectional: true
+  dropout: 0.3
+
+train:
+  epochs: 6
+  optimizer: adamw
+  lr: 1.0e-3
+  weight_decay: 1.0e-2
+  momentum: 0.9
+  scheduler: none          # <--- pas de scheduler
+  t_max: 6                 # ignoré
+
+early_stopping:
+  patience: 3
+  min_delta: 0.0
