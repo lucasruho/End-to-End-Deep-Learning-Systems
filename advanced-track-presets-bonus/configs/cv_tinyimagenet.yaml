@@ -1,15 +1,15 @@
 
 task: cv_classification
 seed: 42
-output_dir: outputs_tiny
+output_dir: outputs
 
 data:
   dataset: imagefolder
   root: ./data/tiny-imagenet-200/train
-  img_size: 64
+  img_size: 224
   batch_size: 128
   num_workers: 2
-  val_split: 0.1   # use Tiny-ImageNet val as true validation set via separate run or point root to val
+  val_split: 0.0   # use Tiny-ImageNet val as true validation set via separate run or point root to val
 
 model:
   arch: resnet18

@@ -19,13 +19,16 @@ def run_smoke(cfg_path: str = "configs/yolo_coco128.yaml") -> Path:
     weights = cfg["model"]["weights"]
 
     model = YOLO(weights)
+
+    source_img = "https://ultralytics.com/images/bus.jpg"
     results = model.predict(
-        source="ultralytics/assets/bus.jpg",
-        imgsz=imgsz,
-        device=device,
-        verbose=False,
-        max_det=10,
-    )
+    source=source_img,
+    imgsz=imgsz,
+    device=device,
+    verbose=False,
+    max_det=10,
+)
+
     pred = results[0]
     boxes = pred.boxes
     num_boxes = int(boxes.xyxy.shape[0]) if boxes is not None else 0
