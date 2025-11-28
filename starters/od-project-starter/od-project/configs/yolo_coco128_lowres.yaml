@@ -1,0 +1,19 @@
+task: object_detection
+seed: 42
+output_dir: outputs_lowres
+
+model:
+  weights: yolov8n.pt
+
+data:
+  yaml: coco128.yaml
+  imgsz: 320      # résolution réduite
+  batch: 8
+
+train:
+  epochs: 20
+  lr0: 0.005
+  weight_decay: 0.0005
+  patience: 10
+
+device: cpu

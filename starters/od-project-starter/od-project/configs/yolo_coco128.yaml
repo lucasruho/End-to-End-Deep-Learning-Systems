@@ -16,4 +16,4 @@ train:
   weight_decay: 0.0005
   patience: 20
 
-device: auto
+device: cpu

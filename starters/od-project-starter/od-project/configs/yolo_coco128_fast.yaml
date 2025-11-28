@@ -1,0 +1,19 @@
+task: object_detection
+seed: 42
+output_dir: outputs_fast
+
+model:
+  weights: yolov8n.pt     # modèle le plus léger possible
+
+data:
+  yaml: coco128.yaml      # dataset coco128 intégré à Ultralytics
+  imgsz: 416              # plus petit que 640 -> plus rapide
+  batch: 8                # divisé par 2 -> moins de VRAM, plus rapide
+
+train:
+  epochs: 2               # au lieu de 5 -> idéal pour un run rapide
+  lr0: 0.01               # inchangé
+  weight_decay: 0.0005
+  patience: 5             # early stopping plus agressif
+
+device: cpu

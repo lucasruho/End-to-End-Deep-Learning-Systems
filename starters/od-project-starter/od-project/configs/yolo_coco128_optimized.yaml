@@ -1,0 +1,19 @@
+task: object_detection
+seed: 42
+output_dir: outputs_optimized
+
+model:
+  weights: yolov8n.pt
+
+data:
+  yaml: coco128.yaml
+  imgsz: 640      # résolution standard YOLO, plus précise que 416
+  batch: 8        # raisonnable pour le CPU, gradients plus stables
+
+train:
+  epochs: 20      # entraînement plus long que le fast (2) ou le baseline (5)
+  lr0: 0.005      # LR un peu plus faible pour une convergence plus stable
+  weight_decay: 0.0005
+  patience: 10    # early stopping plus réactif que 20 mais pas trop agressif
+
+device: cpu       # toute la config M3 tourne en CPU

@@ -1,0 +1,10 @@
+{
+  "run_dir": "outputs_fast\\train",
+  "best_weights": "outputs_fast\\train\\weights\\best.pt",
+  "metrics": {
+    "map50": 0.5764460957652593,
+    "map": 0.42830310853820963,
+    "precision": 0.7223617467216311,
+    "recall": 0.4635261345114084
+  }
+}

@@ -14,9 +14,10 @@ from utils import load_yaml, save_json
 
 def run_smoke(cfg_path: str = "configs/yolo_coco128.yaml") -> Path:
     cfg = load_yaml(cfg_path)
-    device = cfg.get("device", "auto")
     imgsz = int(cfg["data"]["imgsz"])
     weights = cfg["model"]["weights"]
+
+    device = "cpu"
 
     model = YOLO(weights)
 

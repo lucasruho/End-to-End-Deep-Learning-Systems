@@ -1,0 +1,10 @@
+{
+  "run_dir": "outputs_bigbatch\\train",
+  "best_weights": "outputs_bigbatch\\train\\weights\\best.pt",
+  "metrics": {
+    "map50": 0.7714686526231016,
+    "map": 0.5949464937675507,
+    "precision": 0.7324590313477366,
+    "recall": 0.7253033793589001
+  }
+}
