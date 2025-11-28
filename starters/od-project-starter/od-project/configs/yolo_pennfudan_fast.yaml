@@ -1,0 +1,22 @@
+task: object_detection
+seed: 42
+output_dir: outputs_pennfudan_fast
+
+model:
+  # Modèle YOLOv8 pré-entraîné COCO (baseline légère)
+  weights: yolov8n.pt
+
+data:
+  # Fichier data YAML que nous avons créé pour Penn-Fudan
+  yaml: configs/pennfudan.yaml
+  imgsz: 640
+  batch: 8   # taille d'un batch pour notre "one full batch" test
+
+train:
+  # Config "fast" : pensée pour des runs très courts
+  epochs: 1          # un seul epoch si on lance un entraînement
+  lr0: 0.01
+  weight_decay: 0.0005
+  patience: 10
+
+device: cpu         # GPU s'il est dispo, sinon CPU

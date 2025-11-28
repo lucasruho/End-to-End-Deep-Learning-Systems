@@ -1,0 +1,28 @@
+task: object_detection
+seed: 42
+output_dir: outputs_pennfudan_lowaug
+
+model:
+  weights: yolov8n.pt
+
+data:
+  yaml: configs/pennfudan.yaml
+  imgsz: 768
+  batch: 8
+
+train:
+  epochs: 50
+  lr0: 0.01
+  weight_decay: 0.0001
+  patience: 30
+
+augment:
+  hsv_h: 0.005
+  hsv_s: 0.2
+  hsv_v: 0.1
+  flipud: 0.0
+  fliplr: 0.2
+  mosaic: 0.0
+  mixup: 0.0
+
+device: cpu

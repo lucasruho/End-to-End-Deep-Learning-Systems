@@ -1,0 +1,10 @@
+{
+  "run_dir": "outputs_pennfudan_optimized\\train",
+  "best_weights": "unknown",
+  "metrics": {
+    "map50": 0.9843127524380387,
+    "map": 0.8056464833499423,
+    "precision": 0.9415237572940995,
+    "recall": 0.9584253948092081
+  }
+}
